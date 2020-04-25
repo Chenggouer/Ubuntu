@@ -1,3 +1,6 @@
+/* 小朋友对饼干的渴望度由g来表示
+ * 饼干大小由S标记。给定饼干数，及其大小
+ * 设计算法，满足最多小盆友对饼干的渴望 */
 #include<iostream>
 #include<algorithm>
 #include<vector>
