@@ -1,0 +1,92 @@
+#include<iostream>
+#include<cstdlib>
+#include<ctime>
+#include "Queue.h"
+const int MIN_PER_HR = 60;
+
+bool newCustomer(double x);
+
+int main()
+{
+	using std::cout;
+	using std::endl;
+	using std::cin;
+	using std::ios_base;
+
+	std::srand(std::time(0));
+
+	cout << "Case study: bank of Heather Automatic Teller\n";
+	cout << "Enter maximum size of queue: ";
+	int qs;
+	cin >> qs;
+	Queue line{qs};
+
+	cout << "Enter the number of simulation hours: ";
+	int hours;
+	cin >> hours;
+
+	long cyclelimit = MIN_PER_HR * hours;
+
+	cout << "Enter the average number of customes per hour: ";
+	double perhour;
+	cin >> perhour;
+	double min_per_cust;
+	min_per_cust = MIN_PER_HR;
+
+	Item temp;
+	long turnaways = 0;
+	long customer = 0;
+	long served = 0;
+	long sum_line = 0;
+	int wait_time = 0;
+	long line_wait = 0;
+
+	for(int cycle = 0; cycle < cyclelimit; cycle++)
+	{
+		if(newCustomer(min_per_cust))
+		{
+			if(line.isFull())
+			  turnaways++;
+			else
+			{
+				customer++;
+				temp.set(cycle);
+				line.enqueue(temp);
+			}
+		}
+		if(wait_time <= 0 && !line.isEmpty())
+		{
+			line.dequeue(temp);
+			wait_time = temp.ptime();
+			line_wait += cycle - temp.when();
+			served++;
+		}
+
+	   if(wait_time > 0)
+	     wait_time--;
+	   sum_line += line.QueueCount();
+    }
+
+	if(customer > 0)
+	{
+		cout << "customer accepted: " << customer << endl;
+		cout << " customer served: " << served << endl;
+		cout << "     turnaways: " << turnaways << endl;
+
+		cout << "average queue size: ";
+		cout.precision(2);
+		cout.setf(ios_base::fixed, ios_base::floatfield);
+		cout << (double) sum_line / cyclelimit << endl;
+		cout << " average wait time: " << 
+			(double) line_wait / served << " minutes\n";
+	}
+	else
+	  cout << "No customer!\n";
+	cout << "Done!\n";
+	return 0;
+}
+
+bool newCustomer(double x)
+{
+	return (std::rand() * x / RAND_MAX < 1);
+}
