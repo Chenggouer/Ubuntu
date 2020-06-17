@@ -50,5 +50,22 @@ BinNode<T>* AVL<T>::insert(const T& e)
 	}
 }
 
+template<typename T>
+bool AVL<T>::remove(const T& e)
+{
+	BinNode<T>*& x = search(e);
+	if(!x) return false;
+	removeAt(x, BinTree<T>::_hot);
+	BinTree<T>::_size--;
+	for(BinNode<T>* g = BinTree<T>::_hot; g; g = g->parent)
+	{
+		if(!AVLBalanced(*g))
+		  g = FormParentTo(*g) = rotateAt(tallerchild(tallerchild(g)));
+		updateHeight(g);
+	}
+
+	return true;
+}
+
 
 #endif
